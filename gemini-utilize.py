@@ -54,3 +54,21 @@ qa_chain = RetrievalQA.from_chain_type(gemini_model, retriever=retriever, return
 question = "What is AI?"
 result = qa_chain.invoke({"query": question})
 print("Answer:", result["result"])
+
+## Manipulate configuration
+def get_response(prompt, generation_config={}):
+    response = model.generate_content(contents=prompt, generation_config=generation_config)
+    return response
+
+def configure_model(prompt, temperature=0.8, top_p=0.95, top_k=16, max_output_tokens=100):
+    config = genai.types.GenerationConfig(
+        temperature=temperature,
+        top_p=top_p,
+        top_k=top_k,
+        max_output_tokens=max_output_tokens,
+        candidate_count=1,  # this value is fixed as 1 in Gemini API
+    )
+    result = get_response(prompt, generation_config=config)
+    return result
+
+print(configure_model("Tell me about the capital of France.", temperature=0.5, top_p=0.9, top_k=10, max_output_tokens=100).text)
